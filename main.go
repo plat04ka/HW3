@@ -34,11 +34,6 @@ func main() {
 	//Task 3
 	fmt.Println("-------------------------------------------")
 	fmt.Println("make 3 function that call one after one ↓")
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("Recovered in main:", r)
-		}
-	}()
 	obsos := otsos1(7)
 	fmt.Println(obsos)
 }
@@ -56,16 +51,27 @@ func fibonacсi(n int) int {
 	return fibonacсi(n-1) + fibonacсi(n-2)
 }
 
-// otsos1 вторая функция, к которой обращается первая функция main, а сама обращается к третьей функции
+// otsos1 первая функция к которой обращаются, еще гасит панику третьей
 func otsos1(otsosal1 int) int {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in main:", r)
+		}
+	}()
 	fmt.Println(otsosal1)
 	otsos2(otsosal1 - 1)
 	return 10
 }
 
-// otsos2 третья функция к которой обращаются, и та паникует
+// otsos2 вторая функция к которой обращаются
 func otsos2(otsosal2 int) {
 	fmt.Println(otsosal2)
+	otsos3(otsosal2 - 1)
+}
+
+// otsos3 третья функция к которой обращаются, еще паникует
+func otsos3(otsosal3 int) {
+	fmt.Println(otsosal3)
 
 	panic("panica")
 }
